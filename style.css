@@ -2,6 +2,11 @@
   font-family: "StratosSkyeng";
   src: url(./fonts/stratosskyengweb-regular.woff2);
 }
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .game {
   background-color: #004980;
   width: 100vw;
@@ -67,4 +72,22 @@
   background: #FFFFFF;
   border-radius: 12px;
   border: #FFFFFF;
+}
+
+.difficulty_active {
+  border: 3px solid #004980;
+}
+
+.warning {
+  font-family: "StratosSkyeng";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 48px;
+  text-align: center;
+  font-feature-settings: "pnum" on, "lnum" on;
+  color: red;
+}
+.warning_hidden {
+  display: none;
 }/*# sourceMappingURL=style.css.map */

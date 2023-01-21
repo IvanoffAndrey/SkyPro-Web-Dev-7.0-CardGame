@@ -7,15 +7,11 @@
     <link rel="stylesheet" href="style.css">
     <title>Игра</title>
 </head>
-<body class="game">
-    <div class="game__start-window">
-        <h1 class="game__header">Выбери <br/> сложность</h1>
-        <div class="game__menu-difficulty">
-            <button class="difficulty">1</button>
-            <button class="difficulty">2</button>
-            <button class="difficulty">3</button>
-        </div>
-        <button class="game__start-button">Старт</button>
-    </div>
+<body>
+    <div class="game"></div>
 </body>
+<script src="./cardgame.js"></script>
+<script>
+    const game = new CardGame(document.querySelector('.game'));
+</script>
 </html>
