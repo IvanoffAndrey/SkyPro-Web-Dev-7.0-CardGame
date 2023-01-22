@@ -67,7 +67,7 @@ class CardGame {
                 this.gameWindow();
             }
         });
-    }
+    }   
 
     gameWindow() {
         console.log('игра');
@@ -153,6 +153,4 @@ class CardGame {
             this.element.classList.remove('position-top');
             this.start()});
     }
-
-    
 }
