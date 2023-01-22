@@ -40,9 +40,14 @@ body {
   gap: 24px;
   margin: 48px 0 67px 0;
 }
-.game__start-button {
-  width: 246px;
-  height: 50px;
+.game__menu {
+  width: 95vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 22px;
+}
+.game__button {
   background: #7AC100;
   border-radius: 12px;
   font-family: "StratosSkyeng";
@@ -54,6 +59,59 @@ body {
   font-feature-settings: "pnum" on, "lnum" on;
   color: #FFFFFF;
   border: #7AC100;
+}
+.game__button_start {
+  width: 246px;
+  height: 50px;
+}
+.game__button_play-again {
+  width: 246px;
+  height: 50px;
+}
+.game__time {
+  width: 155px;
+}
+.game__time-titles {
+  display: flex;
+}
+.game__time-title {
+  font-family: "StratosSkyeng";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 32px;
+  font-feature-settings: "pnum" on, "lnum" on;
+  color: #FFFFFF;
+}
+.game__time-title_min {
+  padding-left: 39px;
+  padding-right: 0;
+}
+.game__time-title_sec {
+  padding-left: 57px;
+  padding-right: 0;
+}
+.game__time-digits {
+  font-family: "StratosSkyeng";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 64px;
+  line-height: 72px;
+  color: #FFFFFF;
+}
+.game__card-field {
+  width: 95vw;
+}
+.game__card-field {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 35px;
+}
+.game__card {
+  width: 95px;
+  height: 133px;
 }
 
 .difficulty {
@@ -90,4 +148,10 @@ body {
 }
 .warning_hidden {
   display: none;
+}
+
+.position-top {
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
 }/*# sourceMappingURL=style.css.map */
