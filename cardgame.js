@@ -57,20 +57,65 @@ class CardGame {
                 } else {
                     button.classList.remove('difficulty_active');
                 }
-            })
-        })
+            });
+        });
 
         startButton.addEventListener('click', () => {
-            if ((this.difficulty === '') || (this.difficulty === undefined)) {
+            if (this.difficulty === '' || this.difficulty === undefined) {
                 warning.classList.remove('warning_hidden');
             } else {
                 this.gameWindow();
             }
         });
-    }   
+    }
 
     gameWindow() {
-        console.log('игра');
+        console.log('загрузка');
+        const levels = {
+            1: 6,
+            2: 12,
+            3: 18,
+        };
+        const cardsArr = [
+            '6C',
+            '6D',
+            '6H',
+            '6S',
+            '7C',
+            '7D',
+            '7H',
+            '7S',
+            '8C',
+            '8D',
+            '8H',
+            '8S',
+            '9C',
+            '9D',
+            '9H',
+            '9S',
+            'TC',
+            'TD',
+            'TH',
+            'TS',
+            'JC',
+            'JD',
+            'JH',
+            'JS',
+            'QC',
+            'QD',
+            'QH',
+            'QS',
+            'KC',
+            'KD',
+            'KH',
+            'KS',
+            'AC',
+            'AD',
+            'AH',
+            'AS',
+        ];
+        let cardsInGame = [];
+
         this.element.innerHTML = '';
         this.element.classList.add('position-top');
 
@@ -84,16 +129,22 @@ class CardGame {
         gameTimeTitles.classList.add('game__time-titles');
 
         const gameTimeTitlesMin = document.createElement('div');
-        gameTimeTitlesMin.classList.add('game__time-title', 'game__time-title_min');
+        gameTimeTitlesMin.classList.add(
+            'game__time-title',
+            'game__time-title_min'
+        );
         gameTimeTitlesMin.textContent = 'min';
 
         const gameTimeTitlesSec = document.createElement('div');
-        gameTimeTitlesSec.classList.add('game__time-title', 'game__time-title_sec');
+        gameTimeTitlesSec.classList.add(
+            'game__time-title',
+            'game__time-title_sec'
+        );
         gameTimeTitlesSec.textContent = 'sec';
 
         const gameTimeDigits = document.createElement('div');
         gameTimeDigits.classList.add('game__time-digits');
-        gameTimeDigits.textContent = '00.00'
+        gameTimeDigits.textContent = '00.00';
 
         gameTimeTitles.appendChild(gameTimeTitlesMin);
         gameTimeTitles.appendChild(gameTimeTitlesSec);
@@ -101,7 +152,10 @@ class CardGame {
         gameTime.appendChild(gameTimeDigits);
 
         const buttonPlayAgain = document.createElement('button');
-        buttonPlayAgain.classList.add('game__button', 'game__button_play-again');
+        buttonPlayAgain.classList.add(
+            'game__button',
+            'game__button_play-again'
+        );
         buttonPlayAgain.textContent = 'Начать заново';
 
         menuGame.appendChild(gameTime);
@@ -109,48 +163,51 @@ class CardGame {
 
         const cardField = document.createElement('div');
         cardField.classList.add('game__card-field');
-        
-        switch (this.difficulty) {
-            case '1':
-                for (let i = 1; i <= 6; i++) {
-                    let card = document.createElement('div')
-                    card.classList.add('game__card');
-                    const cardBack = document.createElement('img');
-                    cardBack.setAttribute('src', './img/back.svg');
-                    card.appendChild(cardBack);
-                    card.setAttribute('data-number', `${i}`);
-                    cardField.appendChild(card);
-                }
-                break;
-            case '2':
-                for (let i = 1; i <= 12; i++) {
-                    let card = document.createElement('div')
-                    card.classList.add('game__card');
-                    const cardBack = document.createElement('img');
-                    cardBack.setAttribute('src', './img/back.svg');
-                    card.appendChild(cardBack);
-                    card.setAttribute('data-number', `${i}`);
-                    cardField.appendChild(card);
-                }
-                break;
-            case '3':
-                for (let i = 1; i <= 18; i++) {
-                    let card = document.createElement('div')
-                    card.classList.add('game__card');
-                    const cardBack = document.createElement('img');
-                    cardBack.setAttribute('src', './img/back.svg');
-                    card.appendChild(cardBack);
-                    card.setAttribute('data-number', `${i}`);
-                    cardField.appendChild(card);
-                }
-                break;
+
+        for (let i = 1; i <= levels[this.difficulty] / 2; i++) {
+            let card = cardsArr[Math.floor(Math.random() * cardsArr.length)];
+            cardsInGame.push(card);
+        }
+
+        cardsInGame = cardsInGame.concat(cardsInGame);
+        cardsInGame = cardsInGame.sort(() => Math.random() - 0.5);
+        console.log(cardsInGame);
+
+        for (let i = 0; i <= levels[this.difficulty] - 1; i++) {
+            let card = document.createElement('div');
+            card.classList.add('game__card');
+            const cardBack = document.createElement('img');
+            cardBack.setAttribute('src', './img/shirt.svg');
+            cardBack.classList.add('card');
+            card.appendChild(cardBack);
+            cardBack.setAttribute('data-card', `${cardsInGame[i]}`);
+            cardField.appendChild(card);
         }
 
         this.element.appendChild(menuGame);
         this.element.appendChild(cardField);
 
+        let cards = document.querySelectorAll('.card');
         buttonPlayAgain.addEventListener('click', () => {
             this.element.classList.remove('position-top');
-            this.start()});
+            this.start();
+        });
+
+        setTimeout(() => {
+            cards.forEach((item) => {
+                item.setAttribute('src', `./img/${item.dataset.card}.svg`);
+                this.gameStart();
+            });
+        }, 1000);
+    }
+
+    gameStart() {
+        console.log('игра');
+        let cards = document.querySelectorAll('.card');
+        setTimeout(() => {
+            cards.forEach((item) => {
+                item.setAttribute('src', './img/shirt.svg');
+            });
+        }, 5000);
     }
 }
