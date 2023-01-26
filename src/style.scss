@@ -1,6 +1,6 @@
 @font-face {
-    font-family: 'StratosSkyeng';
-    src: url(./fonts/stratosskyengweb-regular.woff2);
+    font-family: 'Skyeng';
+    src: url(/fonts/stratosskyengweb-regular.woff2);
 }
 
 body {
@@ -20,14 +20,14 @@ body {
         width: 480px;
         height: 459px;
         border-radius: 12px;
-        background-color: #C2F5FF;
+        background-color: #c2f5ff;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
     &__header {
-        font-family: 'StratosSkyeng';
+        font-family: 'Skyeng';
         font-style: normal;
         font-weight: 400;
         font-size: 40px;
@@ -53,17 +53,17 @@ body {
     }
 
     &__button {
-        background: #7AC100;
+        background: #7ac100;
         border-radius: 12px;
-        font-family: 'StratosSkyeng';
+        font-family: 'Skyeng';
         font-style: normal;
         font-weight: 400;
         font-size: 24px;
         line-height: 32px;
         text-align: center;
         font-feature-settings: 'pnum' on, 'lnum' on;
-        color: #FFFFFF;
-        border: #7AC100;
+        color: #ffffff;
+        border: #7ac100;
 
         &_start {
             width: 246px;
@@ -85,13 +85,13 @@ body {
     }
 
     &__time-title {
-        font-family: 'StratosSkyeng';
+        font-family: 'Skyeng';
         font-style: normal;
         font-weight: 400;
         font-size: 16px;
         line-height: 32px;
         font-feature-settings: 'pnum' on, 'lnum' on;
-        color: #FFFFFF;
+        color: #ffffff;
 
         &_min {
             padding-left: 39px;
@@ -105,12 +105,12 @@ body {
     }
 
     &__time-digits {
-        font-family: 'StratosSkyeng';
+        font-family: 'Skyeng';
         font-style: normal;
         font-weight: 400;
         font-size: 64px;
         line-height: 72px;
-        color: #FFFFFF;
+        color: #ffffff;
     }
 
     &__card-field {
@@ -134,7 +134,7 @@ body {
 .difficulty {
     width: 98px;
     height: 98px;
-    font-family: 'StratosSkyeng';
+    font-family: 'Skyeng';
     font-style: normal;
     font-weight: 400;
     font-size: 64px;
@@ -143,10 +143,10 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: #0080C1;
-    background: #FFFFFF;
+    color: #0080c1;
+    background: #ffffff;
     border-radius: 12px;
-    border: #FFFFFF;
+    border: #ffffff;
 }
 
 .difficulty_active {
@@ -154,7 +154,7 @@ body {
 }
 
 .warning {
-    font-family: 'StratosSkyeng';
+    font-family: 'Skyeng';
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
