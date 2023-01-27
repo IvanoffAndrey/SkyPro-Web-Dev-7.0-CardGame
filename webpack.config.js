@@ -4,6 +4,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
+const mode =
+    process.env.NODE_ENV === 'production' ? 'production' : 'development';
+
 module.exports = {
     entry: './src/cardgame.js',
     mode: 'production',
@@ -20,6 +23,10 @@ module.exports = {
             },
         ],
     },
+    optimization: {
+        minimizer: ['...', new CssMinimizerPlugin()],
+    },
+    devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
@@ -34,6 +41,5 @@ module.exports = {
             template: './index.html',
         }),
         new MiniCssExtractPlugin(),
-        new HtmlWebpackPlugin(),
     ],
 };
