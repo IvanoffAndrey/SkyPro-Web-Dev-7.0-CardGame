@@ -1,4 +1,4 @@
-class CardGame {
+export class CardGame {
     constructor(element) {
         if (!(element instanceof HTMLElement)) {
             throw new Error('Передан не HTMLElement');

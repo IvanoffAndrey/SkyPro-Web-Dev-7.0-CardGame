@@ -8,7 +8,7 @@ const mode =
     process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
 module.exports = {
-    entry: './src/cardgame.js',
+    entry: './src/index.js',
     mode: 'production',
     module: {
         rules: [
