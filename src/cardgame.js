@@ -1,4 +1,4 @@
-class CardGame {
+export class CardGame {
     constructor(element) {
         if (!(element instanceof HTMLElement)) {
             throw new Error('Передан не HTMLElement');
@@ -6,6 +6,11 @@ class CardGame {
 
         this.element = element;
         this.difficulty = '';
+        this.levels = {
+            1: 6,
+            2: 12,
+            3: 18,
+        };
 
         this.start();
     }
@@ -71,11 +76,7 @@ class CardGame {
 
     gameWindow() {
         console.log('загрузка');
-        const levels = {
-            1: 6,
-            2: 12,
-            3: 18,
-        };
+
         const cardsArr = [
             '6C',
             '6D',
@@ -164,7 +165,7 @@ class CardGame {
         const cardField = document.createElement('div');
         cardField.classList.add('game__card-field');
 
-        for (let i = 1; i <= levels[this.difficulty] / 2; i++) {
+        for (let i = 1; i <= this.levels[this.difficulty] / 2; i++) {
             let card = cardsArr[Math.floor(Math.random() * cardsArr.length)];
             cardsInGame.push(card);
         }
@@ -173,11 +174,11 @@ class CardGame {
         cardsInGame = cardsInGame.sort(() => Math.random() - 0.5);
         console.log(cardsInGame);
 
-        for (let i = 0; i <= levels[this.difficulty] - 1; i++) {
+        for (let i = 0; i <= this.levels[this.difficulty] - 1; i++) {
             let card = document.createElement('div');
             card.classList.add('game__card');
             const cardBack = document.createElement('img');
-            cardBack.setAttribute('src', './img/shirt.svg');
+            cardBack.setAttribute('src', './static/img/shirt.svg');
             cardBack.classList.add('card');
             card.appendChild(cardBack);
             cardBack.setAttribute('data-card', `${cardsInGame[i]}`);
@@ -195,7 +196,10 @@ class CardGame {
 
         setTimeout(() => {
             cards.forEach((item) => {
-                item.setAttribute('src', `./img/${item.dataset.card}.svg`);
+                item.setAttribute(
+                    'src',
+                    `./static/img/${item.dataset.card}.svg`
+                );
                 this.gameStart();
             });
         }, 1000);
@@ -206,8 +210,59 @@ class CardGame {
         let cards = document.querySelectorAll('.card');
         setTimeout(() => {
             cards.forEach((item) => {
-                item.setAttribute('src', './img/shirt.svg');
+                item.setAttribute('src', './static/img/shirt.svg');
             });
+            this.cardСompare();
         }, 5000);
+    }
+
+    cardСompare() {
+        let cardFirst = '';
+        let cardSecond = '';
+        let cardOpen = 0;
+        console.log(this.levels[this.difficulty]);
+        const field = document.querySelector('.game__card-field');
+        field.addEventListener('click', (event) => {
+            let target = event.target;
+            if (target.dataset.card && cardFirst === '') {
+                target.setAttribute(
+                    'src',
+                    `./static/img/${target.dataset.card}.svg`
+                );
+                cardFirst = target.dataset.card;
+                cardOpen++;
+                console.log(cardOpen);
+            } else if (
+                target.dataset.card &&
+                cardFirst !== '' &&
+                cardSecond === ''
+            ) {
+                target.setAttribute(
+                    'src',
+                    `./static/img/${target.dataset.card}.svg`
+                );
+                cardSecond = target.dataset.card;
+                cardOpen++;
+                console.log(cardOpen);
+
+                if (cardFirst === cardSecond) {
+                    cardFirst = '';
+                    cardSecond = '';
+                    if (cardOpen === this.levels[this.difficulty]) {
+                        this.win();
+                    }
+                } else {
+                    this.lose();
+                }
+            }
+        });
+    }
+
+    win() {
+        alert('победа');
+    }
+
+    lose() {
+        alert('проиграл');
     }
 }

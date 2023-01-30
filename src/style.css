@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Skyeng";
-  src: url(/fonts/stratosskyengweb-regular.woff2);
+  src: url(/static/fonts/stratosskyengweb-regular.woff2);
 }
 body {
   margin: 0;
