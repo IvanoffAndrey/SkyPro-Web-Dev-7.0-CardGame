@@ -6,6 +6,8 @@ export class CardGame {
 
         this.element = element;
         this.difficulty = '';
+        this.minute;
+        this.second;
         this.levels = {
             1: 6,
             2: 12,
@@ -145,10 +147,30 @@ export class CardGame {
 
         const gameTimeDigits = document.createElement('div');
         gameTimeDigits.classList.add('game__time-digits');
-        gameTimeDigits.textContent = '00.00';
+
+        const gameTimeDigitMin = document.createElement('div');
+        gameTimeDigitMin.classList.add(
+            'game__time-digit',
+            'game__time-digit_min'
+        );
+        gameTimeDigitMin.textContent = '00';
+
+        const dot = document.createElement('div');
+        dot.textContent = '.';
+        dot.classList.add('game__time-digit');
+
+        const gameTimeDigitSec = document.createElement('div');
+        gameTimeDigitSec.classList.add(
+            'game__time-digit',
+            'game__time-digit_sec'
+        );
+        gameTimeDigitSec.textContent = '00';
 
         gameTimeTitles.appendChild(gameTimeTitlesMin);
         gameTimeTitles.appendChild(gameTimeTitlesSec);
+        gameTimeDigits.appendChild(gameTimeDigitMin);
+        gameTimeDigits.appendChild(dot);
+        gameTimeDigits.appendChild(gameTimeDigitSec);
         gameTime.appendChild(gameTimeTitles);
         gameTime.appendChild(gameTimeDigits);
 
@@ -200,8 +222,8 @@ export class CardGame {
                     'src',
                     `./static/img/${item.dataset.card}.svg`
                 );
-                this.gameStart();
             });
+            this.gameStart();
         }, 1000);
     }
 
@@ -217,6 +239,21 @@ export class CardGame {
     }
 
     cardСompare() {
+        let timer = 0;
+        let timerInterval;
+        let second = document.querySelector('.game__time-digit_sec');
+        let minute = document.querySelector('.game__time-digit_min');
+
+        timerInterval = setInterval(function () {
+            timer += 1 / 60;
+            this.second = Math.floor(timer) - Math.floor(timer / 60) * 60;
+            this.minute = Math.floor(timer / 60);
+            second.textContent =
+                this.second < 10 ? '0' + this.second.toString() : this.second;
+            minute.textContent =
+                this.minute < 10 ? '0' + this.minute.toString() : this.minute;
+        }, 1000 / 60);
+
         let cardFirst = '';
         let cardSecond = '';
         let cardOpen = 0;
@@ -250,19 +287,97 @@ export class CardGame {
                     cardSecond = '';
                     if (cardOpen === this.levels[this.difficulty]) {
                         this.win();
+                        clearInterval(timerInterval);
                     }
                 } else {
                     this.lose();
+                    clearInterval(timerInterval);
                 }
             }
         });
     }
 
     win() {
-        alert('победа');
+        const finalWindow = document.createElement('div');
+        finalWindow.classList.add('game__final-window');
+
+        const finalImg = document.createElement('img');
+        finalImg.classList.add('game__final-img');
+        finalImg.setAttribute('src', './static/img/win.png');
+
+        const header = document.createElement('h1');
+        header.classList.add('game__header');
+        header.textContent = 'Вы выиграли!';
+
+        const finalTimeTitle = document.createElement('h3');
+        finalTimeTitle.classList.add('game__final-time-title');
+        finalTimeTitle.textContent = 'Затраченное время:';
+
+        const finalTimeDigit = document.createElement('div');
+        finalTimeDigit.classList.add('game__final-time-digit');
+        finalTimeDigit.textContent = `${
+            minute < 10 ? '0' + minute.toString() : minute
+        }.${second < 10 ? '0' + second.toString() : second} `;
+
+        const finalButton = document.createElement('button');
+        finalButton.classList.add('game__button', 'game__button_play-again');
+        finalButton.textContent = 'Играть снова';
+
+        finalWindow.appendChild(finalImg);
+        finalWindow.appendChild(header);
+        finalWindow.appendChild(finalTimeTitle);
+        finalWindow.appendChild(finalTimeDigit);
+        finalWindow.appendChild(finalButton);
+        this.element.appendChild(finalWindow);
+
+        finalButton.addEventListener('click', () => {
+            this.element.classList.remove('position-top');
+            this.start();
+        });
+
+        minute = 0;
+        second = 0;
     }
 
     lose() {
-        alert('проиграл');
+        const finalWindow = document.createElement('div');
+        finalWindow.classList.add('game__final-window');
+
+        const finalImg = document.createElement('img');
+        finalImg.classList.add('game__final-img');
+        finalImg.setAttribute('src', './static/img/lose.png');
+
+        const header = document.createElement('h1');
+        header.classList.add('game__header');
+        header.textContent = 'Вы проиграли!';
+
+        const finalTimeTitle = document.createElement('h3');
+        finalTimeTitle.classList.add('game__final-time-title');
+        finalTimeTitle.textContent = 'Затраченное время:';
+
+        const finalTimeDigit = document.createElement('div');
+        finalTimeDigit.classList.add('game__final-time-digit');
+        finalTimeDigit.textContent = `${
+            minute < 10 ? '0' + minute.toString() : minute
+        }.${second < 10 ? '0' + second.toString() : second} `;
+
+        const finalButton = document.createElement('button');
+        finalButton.classList.add('game__button', 'game__button_play-again');
+        finalButton.textContent = 'Играть снова';
+
+        finalWindow.appendChild(finalImg);
+        finalWindow.appendChild(header);
+        finalWindow.appendChild(finalTimeTitle);
+        finalWindow.appendChild(finalTimeDigit);
+        finalWindow.appendChild(finalButton);
+        this.element.appendChild(finalWindow);
+
+        finalButton.addEventListener('click', () => {
+            this.element.classList.remove('position-top');
+            this.start();
+        });
+
+        minute = 0;
+        second = 0;
     }
 }
