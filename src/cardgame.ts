@@ -1,13 +1,18 @@
 export class CardGame {
-    constructor(element) {
+    element: HTMLElement;
+    difficulty: string;
+    min: number;
+    sec: number;
+    levels: { [char: number]: number };
+    constructor(element: HTMLElement) {
         if (!(element instanceof HTMLElement)) {
             throw new Error('Передан не HTMLElement');
         }
 
         this.element = element;
         this.difficulty = '';
-        this.minute;
-        this.second;
+        this.min = 0;
+        this.sec = 0;
         this.levels = {
             1: 6,
             2: 12,
@@ -54,11 +59,14 @@ export class CardGame {
 
         menuDifficulty.addEventListener('click', (event) => {
             const target = event.target;
-            this.difficulty = target.dataset.difficulty;
+            this.difficulty = (target as HTMLElement).dataset.difficulty!;
             console.log(this.difficulty);
 
             buttonsDifficulty.forEach((button) => {
-                if (button.dataset.difficulty == this.difficulty) {
+                if (
+                    (button as HTMLElement).dataset.difficulty ==
+                    this.difficulty
+                ) {
                     button.classList.add('difficulty_active');
                     warning.classList.add('warning_hidden');
                 } else {
@@ -187,7 +195,7 @@ export class CardGame {
         const cardField = document.createElement('div');
         cardField.classList.add('game__card-field');
 
-        for (let i = 1; i <= this.levels[this.difficulty] / 2; i++) {
+        for (let i = 1; i <= this.levels[Number(this.difficulty)] / 2; i++) {
             let card = cardsArr[Math.floor(Math.random() * cardsArr.length)];
             cardsInGame.push(card);
         }
@@ -196,7 +204,7 @@ export class CardGame {
         cardsInGame = cardsInGame.sort(() => Math.random() - 0.5);
         console.log(cardsInGame);
 
-        for (let i = 0; i <= this.levels[this.difficulty] - 1; i++) {
+        for (let i = 0; i <= this.levels[Number(this.difficulty)] - 1; i++) {
             let card = document.createElement('div');
             card.classList.add('game__card');
             const cardBack = document.createElement('img');
@@ -220,7 +228,7 @@ export class CardGame {
             cards.forEach((item) => {
                 item.setAttribute(
                     'src',
-                    `./static/img/${item.dataset.card}.svg`
+                    `./static/img/${(item as HTMLElement).dataset.card}.svg`
                 );
             });
             this.gameStart();
@@ -240,52 +248,52 @@ export class CardGame {
 
     cardСompare() {
         let timer = 0;
-        let timerInterval;
+        //let timerInterval;
         let second = document.querySelector('.game__time-digit_sec');
         let minute = document.querySelector('.game__time-digit_min');
 
-        timerInterval = setInterval(function () {
+        let timerInterval = setInterval(function (this: CardGame) {
             timer += 1 / 60;
-            this.second = Math.floor(timer) - Math.floor(timer / 60) * 60;
-            this.minute = Math.floor(timer / 60);
-            second.textContent =
-                this.second < 10 ? '0' + this.second.toString() : this.second;
-            minute.textContent =
-                this.minute < 10 ? '0' + this.minute.toString() : this.minute;
+            this.sec = Math.floor(timer) - Math.floor(timer / 60) * 60;
+            this.min = Math.floor(timer / 60);
+            second!.textContent =
+                this.sec < 10 ? '0' + this.sec.toString() : this.sec.toString();
+            minute!.textContent =
+                this.min < 10 ? '0' + this.min.toString() : this.min.toString();
         }, 1000 / 60);
 
-        let cardFirst = '';
-        let cardSecond = '';
+        let cardFirst: string | undefined = '';
+        let cardSecond: string | undefined = '';
         let cardOpen = 0;
-        console.log(this.levels[this.difficulty]);
+        console.log(this.levels[Number(this.difficulty)]);
         const field = document.querySelector('.game__card-field');
-        field.addEventListener('click', (event) => {
+        (field as HTMLElement).addEventListener('click', (event) => {
             let target = event.target;
-            if (target.dataset.card && cardFirst === '') {
-                target.setAttribute(
+            if ((target as HTMLElement).dataset.card && cardFirst === '') {
+                (target as HTMLElement).setAttribute(
                     'src',
-                    `./static/img/${target.dataset.card}.svg`
+                    `./static/img/${(target as HTMLElement).dataset.card}.svg`
                 );
-                cardFirst = target.dataset.card;
+                cardFirst = (target as HTMLElement).dataset.card;
                 cardOpen++;
                 console.log(cardOpen);
             } else if (
-                target.dataset.card &&
+                (target as HTMLElement).dataset.card &&
                 cardFirst !== '' &&
                 cardSecond === ''
             ) {
-                target.setAttribute(
+                (target as HTMLElement).setAttribute(
                     'src',
-                    `./static/img/${target.dataset.card}.svg`
+                    `./static/img/${(target as HTMLElement).dataset.card}.svg`
                 );
-                cardSecond = target.dataset.card;
+                cardSecond = (target as HTMLElement).dataset.card;
                 cardOpen++;
                 console.log(cardOpen);
 
                 if (cardFirst === cardSecond) {
                     cardFirst = '';
                     cardSecond = '';
-                    if (cardOpen === this.levels[this.difficulty]) {
+                    if (cardOpen === this.levels[Number(this.difficulty)]) {
                         this.win();
                         clearInterval(timerInterval);
                     }
@@ -313,11 +321,13 @@ export class CardGame {
         finalTimeTitle.classList.add('game__final-time-title');
         finalTimeTitle.textContent = 'Затраченное время:';
 
+        const minute = document.querySelector('.game__time-digit_min');
+        const second = document.querySelector('.game__time-digit_sec');
         const finalTimeDigit = document.createElement('div');
         finalTimeDigit.classList.add('game__final-time-digit');
-        finalTimeDigit.textContent = `${
-            minute < 10 ? '0' + minute.toString() : minute
-        }.${second < 10 ? '0' + second.toString() : second} `;
+        finalTimeDigit.textContent = `${minute!.textContent}.${
+            second!.textContent
+        } `;
 
         const finalButton = document.createElement('button');
         finalButton.classList.add('game__button', 'game__button_play-again');
@@ -335,8 +345,8 @@ export class CardGame {
             this.start();
         });
 
-        minute = 0;
-        second = 0;
+        this.min = 0;
+        this.sec = 0;
     }
 
     lose() {
@@ -358,8 +368,8 @@ export class CardGame {
         const finalTimeDigit = document.createElement('div');
         finalTimeDigit.classList.add('game__final-time-digit');
         finalTimeDigit.textContent = `${
-            minute < 10 ? '0' + minute.toString() : minute
-        }.${second < 10 ? '0' + second.toString() : second} `;
+            document.querySelector('.game__time-digit_min')!.textContent
+        }.${document.querySelector('.game__time-digit_sec')!.textContent} `;
 
         const finalButton = document.createElement('button');
         finalButton.classList.add('game__button', 'game__button_play-again');
@@ -377,7 +387,7 @@ export class CardGame {
             this.start();
         });
 
-        minute = 0;
-        second = 0;
+        this.min = 0;
+        this.sec = 0;
     }
 }

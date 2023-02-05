@@ -8,7 +8,7 @@ const mode =
     process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/index.ts',
     mode: 'production',
     module: {
         rules: [
@@ -17,7 +17,10 @@ module.exports = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
-            { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+            {
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader'],
+            },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/resource',
