@@ -1,11 +1,18 @@
 export class CardGame {
-    constructor(element) {
+    element: HTMLElement;
+    difficulty: string;
+    min: number;
+    sec: number;
+    levels: { [char: number]: number };
+    constructor(element: HTMLElement) {
         if (!(element instanceof HTMLElement)) {
             throw new Error('Передан не HTMLElement');
         }
 
         this.element = element;
         this.difficulty = '';
+        this.min = 0;
+        this.sec = 0;
         this.levels = {
             1: 6,
             2: 12,
@@ -52,11 +59,14 @@ export class CardGame {
 
         menuDifficulty.addEventListener('click', (event) => {
             const target = event.target;
-            this.difficulty = target.dataset.difficulty;
+            this.difficulty = (target as HTMLElement).dataset.difficulty!;
             console.log(this.difficulty);
 
             buttonsDifficulty.forEach((button) => {
-                if (button.dataset.difficulty == this.difficulty) {
+                if (
+                    (button as HTMLElement).dataset.difficulty ==
+                    this.difficulty
+                ) {
                     button.classList.add('difficulty_active');
                     warning.classList.add('warning_hidden');
                 } else {
@@ -145,10 +155,30 @@ export class CardGame {
 
         const gameTimeDigits = document.createElement('div');
         gameTimeDigits.classList.add('game__time-digits');
-        gameTimeDigits.textContent = '00.00';
+
+        const gameTimeDigitMin = document.createElement('div');
+        gameTimeDigitMin.classList.add(
+            'game__time-digit',
+            'game__time-digit_min'
+        );
+        gameTimeDigitMin.textContent = '00';
+
+        const dot = document.createElement('div');
+        dot.textContent = '.';
+        dot.classList.add('game__time-digit');
+
+        const gameTimeDigitSec = document.createElement('div');
+        gameTimeDigitSec.classList.add(
+            'game__time-digit',
+            'game__time-digit_sec'
+        );
+        gameTimeDigitSec.textContent = '00';
 
         gameTimeTitles.appendChild(gameTimeTitlesMin);
         gameTimeTitles.appendChild(gameTimeTitlesSec);
+        gameTimeDigits.appendChild(gameTimeDigitMin);
+        gameTimeDigits.appendChild(dot);
+        gameTimeDigits.appendChild(gameTimeDigitSec);
         gameTime.appendChild(gameTimeTitles);
         gameTime.appendChild(gameTimeDigits);
 
@@ -165,7 +195,7 @@ export class CardGame {
         const cardField = document.createElement('div');
         cardField.classList.add('game__card-field');
 
-        for (let i = 1; i <= this.levels[this.difficulty] / 2; i++) {
+        for (let i = 1; i <= this.levels[Number(this.difficulty)] / 2; i++) {
             let card = cardsArr[Math.floor(Math.random() * cardsArr.length)];
             cardsInGame.push(card);
         }
@@ -174,7 +204,7 @@ export class CardGame {
         cardsInGame = cardsInGame.sort(() => Math.random() - 0.5);
         console.log(cardsInGame);
 
-        for (let i = 0; i <= this.levels[this.difficulty] - 1; i++) {
+        for (let i = 0; i <= this.levels[Number(this.difficulty)] - 1; i++) {
             let card = document.createElement('div');
             card.classList.add('game__card');
             const cardBack = document.createElement('img');
@@ -198,10 +228,10 @@ export class CardGame {
             cards.forEach((item) => {
                 item.setAttribute(
                     'src',
-                    `./static/img/${item.dataset.card}.svg`
+                    `./static/img/${(item as HTMLElement).dataset.card}.svg`
                 );
-                this.gameStart();
             });
+            this.gameStart();
         }, 1000);
     }
 
@@ -217,52 +247,147 @@ export class CardGame {
     }
 
     cardСompare() {
-        let cardFirst = '';
-        let cardSecond = '';
+        let timer = 0;
+        //let timerInterval;
+        let second = document.querySelector('.game__time-digit_sec');
+        let minute = document.querySelector('.game__time-digit_min');
+
+        let timerInterval = setInterval(function (this: CardGame) {
+            timer += 1 / 60;
+            this.sec = Math.floor(timer) - Math.floor(timer / 60) * 60;
+            this.min = Math.floor(timer / 60);
+            second!.textContent =
+                this.sec < 10 ? '0' + this.sec.toString() : this.sec.toString();
+            minute!.textContent =
+                this.min < 10 ? '0' + this.min.toString() : this.min.toString();
+        }, 1000 / 60);
+
+        let cardFirst: string | undefined = '';
+        let cardSecond: string | undefined = '';
         let cardOpen = 0;
-        console.log(this.levels[this.difficulty]);
+        console.log(this.levels[Number(this.difficulty)]);
         const field = document.querySelector('.game__card-field');
-        field.addEventListener('click', (event) => {
+        (field as HTMLElement).addEventListener('click', (event) => {
             let target = event.target;
-            if (target.dataset.card && cardFirst === '') {
-                target.setAttribute(
+            if ((target as HTMLElement).dataset.card && cardFirst === '') {
+                (target as HTMLElement).setAttribute(
                     'src',
-                    `./static/img/${target.dataset.card}.svg`
+                    `./static/img/${(target as HTMLElement).dataset.card}.svg`
                 );
-                cardFirst = target.dataset.card;
+                cardFirst = (target as HTMLElement).dataset.card;
                 cardOpen++;
                 console.log(cardOpen);
             } else if (
-                target.dataset.card &&
+                (target as HTMLElement).dataset.card &&
                 cardFirst !== '' &&
                 cardSecond === ''
             ) {
-                target.setAttribute(
+                (target as HTMLElement).setAttribute(
                     'src',
-                    `./static/img/${target.dataset.card}.svg`
+                    `./static/img/${(target as HTMLElement).dataset.card}.svg`
                 );
-                cardSecond = target.dataset.card;
+                cardSecond = (target as HTMLElement).dataset.card;
                 cardOpen++;
                 console.log(cardOpen);
 
                 if (cardFirst === cardSecond) {
                     cardFirst = '';
                     cardSecond = '';
-                    if (cardOpen === this.levels[this.difficulty]) {
+                    if (cardOpen === this.levels[Number(this.difficulty)]) {
                         this.win();
+                        clearInterval(timerInterval);
                     }
                 } else {
                     this.lose();
+                    clearInterval(timerInterval);
                 }
             }
         });
     }
 
     win() {
-        alert('победа');
+        const finalWindow = document.createElement('div');
+        finalWindow.classList.add('game__final-window');
+
+        const finalImg = document.createElement('img');
+        finalImg.classList.add('game__final-img');
+        finalImg.setAttribute('src', './static/img/win.png');
+
+        const header = document.createElement('h1');
+        header.classList.add('game__header');
+        header.textContent = 'Вы выиграли!';
+
+        const finalTimeTitle = document.createElement('h3');
+        finalTimeTitle.classList.add('game__final-time-title');
+        finalTimeTitle.textContent = 'Затраченное время:';
+
+        const minute = document.querySelector('.game__time-digit_min');
+        const second = document.querySelector('.game__time-digit_sec');
+        const finalTimeDigit = document.createElement('div');
+        finalTimeDigit.classList.add('game__final-time-digit');
+        finalTimeDigit.textContent = `${minute!.textContent}.${
+            second!.textContent
+        } `;
+
+        const finalButton = document.createElement('button');
+        finalButton.classList.add('game__button', 'game__button_play-again');
+        finalButton.textContent = 'Играть снова';
+
+        finalWindow.appendChild(finalImg);
+        finalWindow.appendChild(header);
+        finalWindow.appendChild(finalTimeTitle);
+        finalWindow.appendChild(finalTimeDigit);
+        finalWindow.appendChild(finalButton);
+        this.element.appendChild(finalWindow);
+
+        finalButton.addEventListener('click', () => {
+            this.element.classList.remove('position-top');
+            this.start();
+        });
+
+        this.min = 0;
+        this.sec = 0;
     }
 
     lose() {
-        alert('проиграл');
+        const finalWindow = document.createElement('div');
+        finalWindow.classList.add('game__final-window');
+
+        const finalImg = document.createElement('img');
+        finalImg.classList.add('game__final-img');
+        finalImg.setAttribute('src', './static/img/lose.png');
+
+        const header = document.createElement('h1');
+        header.classList.add('game__header');
+        header.textContent = 'Вы проиграли!';
+
+        const finalTimeTitle = document.createElement('h3');
+        finalTimeTitle.classList.add('game__final-time-title');
+        finalTimeTitle.textContent = 'Затраченное время:';
+
+        const finalTimeDigit = document.createElement('div');
+        finalTimeDigit.classList.add('game__final-time-digit');
+        finalTimeDigit.textContent = `${
+            document.querySelector('.game__time-digit_min')!.textContent
+        }.${document.querySelector('.game__time-digit_sec')!.textContent} `;
+
+        const finalButton = document.createElement('button');
+        finalButton.classList.add('game__button', 'game__button_play-again');
+        finalButton.textContent = 'Играть снова';
+
+        finalWindow.appendChild(finalImg);
+        finalWindow.appendChild(header);
+        finalWindow.appendChild(finalTimeTitle);
+        finalWindow.appendChild(finalTimeDigit);
+        finalWindow.appendChild(finalButton);
+        this.element.appendChild(finalWindow);
+
+        finalButton.addEventListener('click', () => {
+            this.element.classList.remove('position-top');
+            this.start();
+        });
+
+        this.min = 0;
+        this.sec = 0;
     }
 }
